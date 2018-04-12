@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.safe.info.core.mapper.HouseholdRegisterMapper">
+    <select id="selectHouseholdRegisterByNo" parameterType="java.lang.String" resultType="com.safe.info.core.pojo.HouseholdRegister">
+        SELECT * FROM  t_household_register WHERE 1=1 AND state= 1 AND  id_no = #{no}
+    </select>
+
+    <insert id="insert" parameterType="com.safe.info.core.pojo.HouseholdRegister">
+		INSERT INTO t_household_register
+		(name,address,id_no,sex,Issuing_company,juwei_hui,village_street,father,mother,other_guardian,
+		check_number,remark,create_customer,state,update_time,create_time) VALUES
+		(#{name},#{address},#{idNo},#{sex},#{issuingCompany},#{juweiHui},#{villageStreet},#{father},#{mother},#{otherGuardian},#{checkNumber},#{remark}
+		,#{createCustomer},1,NOW(),NOW())
+    </insert>
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.safe.info.core.mapper.HousePropertyMapper">
+    <select id="selectHousePropertyByNo" parameterType="java.lang.String" resultType="com.safe.info.core.pojo.HouseProperty">
+        SELECT * FROM  t_house_property WHERE 1=1 AND state= 1 AND  certificates_no = #{no}
+    </select>
+
+    <insert id="insert" parameterType="com.safe.info.core.pojo.HouseProperty">
+		INSERT INTO t_house_property
+		(query_no,certificates_no,has_id_no,has_name,student_name,share_people,house_street,house_address,
+		obtain_time,check_number,remark,create_customer,state,update_time,create_time)
+		VALUES
+		(#{queryNo},#{certificatesNo},#{hasIdNo},#{hasName},#{studentName,jdbcType=VARCHAR},#{sharePeople},
+		#{houseStreet},#{houseAddress},#{obtainTime},#{checkNumber},#{remark},#{createCustomer}
+		,1,NOW(),NOW())
+    </insert>
+</mapper>

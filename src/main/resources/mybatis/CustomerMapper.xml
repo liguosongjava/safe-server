@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.safe.info.core.mapper.CustomerMapper">
+    <select id="selectCustomerById" parameterType="java.lang.Long" resultType="com.safe.info.core.pojo.Customer">
+        SELECT * FROM  t_customer WHERE 1=1 AND  id = #{customerId}
+    </select>
+
+    <select id="selectCustomerByLoginNo" parameterType="java.lang.String" resultType="com.safe.info.core.pojo.Customer">
+        SELECT * FROM  t_customer WHERE 1=1 AND state= 1 AND  login_no = #{loginNo}
+    </select>
+
+    <insert id="insert" parameterType="com.safe.info.core.pojo.Customer">
+        insert into
+        t_customer(name,password,login_no,state,update_time,create_time)
+        values
+        (#{name},#{password},#{loginNo},1,now(),now())
+    </insert>
+
+    <update id="update" parameterType="com.safe.info.core.pojo.Customer">
+        UPDATE t_region
+        <trim prefix="SET" prefixOverrides=",">
+            <if test="name != null and !name.equals('') "> ,name=#{name}</if>
+            <if test="password != null and !password.equals('') "> ,password=#{password}</if>
+            <if test="loginNo != null and !loginNo.equals('') "> ,login_no=#{loginNo}</if>
+            <if test="regionId != null"> ,region_id=#{regionId}</if>
+            <if test="companyId != null"> ,company_id=#{companyId}</if>
+            <if test="createCustomer != null"> ,create_customer=#{createCustomer}</if>
+            <if test="sex != null"> ,sex=#{sex}</if>
+            <if test="state != null"> ,state=#{state}</if>
+            ,update_time = NOW()
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <select id="queryCustomerPage" resultType="com.safe.info.core.pojo.CustomerDetail">
+        SELECT t1.*,t3.name AS region_name,t2.name AS company_name,t4.name AS create_customer_name
+        FROM  t_customer t1
+              INNER JOIN  t_company t2 ON  t2.id = t1.company_id
+              INNER JOIN  t_region t3 ON t3.id = t1.region_id
+              INNER JOIN  t_customer t4 ON t4.id = t1.create_customer
+        WHERE 1=1 AND t1.state= 1
+        <if test="name != null and !name.equals('') ">
+            AND t1.name LIKE concat('%',#{name},'%')
+        </if>
+        <if test="companyName != null and !companyName.equals('') ">
+            AND t2.name LIKE concat('%',#{regionName},'%')
+        </if>
+        <if test="regionName != null and !regionName.equals('') ">
+            AND t3.name LIKE concat('%',#{regionName},'%')
+        </if>
+        limit #{start},#{pageNum}
+    </select>
+
+    <select id="queryCustomerCount" resultType="java.lang.Integer">
+        SELECT COUNT(t1.id)
+        FROM  t_customer t1
+        INNER JOIN  t_company t2 ON  t2.id = t1.company_id
+        INNER JOIN  t_region t3 ON t3.id = t1.region_id
+        INNER JOIN  t_customer t4 ON t4.id = t1.create_customer
+        WHERE 1=1 AND t1.state= 1
+        <if test="name != null and !name.equals('') ">
+            AND t1.name LIKE concat('%',#{name},'%')
+        </if>
+        <if test="companyName != null and !companyName.equals('') ">
+            AND t2.name LIKE concat('%',#{regionName},'%')
+        </if>
+        <if test="regionName != null and !regionName.equals('') ">
+            AND t3.name LIKE concat('%',#{regionName},'%')
+        </if>
+    </select>
+
+    <select id="queryCustomer" resultType="com.safe.info.core.pojo.CustomerDetail">
+        SELECT t1.*,t3.name AS region_name,t2.name AS company_name,t4.name AS create_customer_name
+        FROM  t_customer t1
+        INNER JOIN  t_company t2 ON  t2.id = t1.company_id
+        INNER JOIN  t_region t3 ON t3.id = t1.region_id
+        INNER JOIN  t_customer t4 ON t4.id = t1.create_customer
+        WHERE 1=1 AND t1.state= 1 AND  t1.id = #{id}
+    </select>
+
+</mapper>

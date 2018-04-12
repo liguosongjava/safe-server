@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+
+	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+		<resetJUL>true</resetJUL>
+	</contextListener>
+
+	<!-- To enable JMX Management -->
+	<jmxConfigurator />
+
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%-20(%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]) %-5level [%X{hydraTraceId}] %logger{80}:%line - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="file"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/opt/logs/safe/safe-server/safe-server.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>/opt/logs/safe/safe-server/safe-server.%d{yyyy-MM-dd}.log
+			</FileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%-20(%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]) %-5level [%X{hydraTraceId}] %logger{80}:%line - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<logger name="com.safe.info.core" level="DEBUG" />
+	<logger name="com.safe.info.core.mapper" level="INFO"></logger>
+	<logger name="org.mybatis" level="INFO"></logger>
+	<logger name="org.quartz.core.QuartzSchedulerThread" level="ERROR"></logger>
+	<logger name="com.jd.bdp" level="ERROR"></logger>
+	<logger name="org.mybatis.spring.SqlSessionUtils" level="WARN"/>
+	<logger name="org.apache" level="WARN"></logger>
+	<logger name="org.eclipse.jetty" level="INFO"/>
+	<logger name="jndi" level="WARN"></logger>
+	<logger name="org.springframework.jdbc.datasource.DataSourceUtils" level="WARN"/>
+	<logger name="com.sun.xml.internal.bind" level="WARN"/>
+	<logger name="org.springframework" level="WARN"/>
+	<logger name="javax.xml" level="WARN"/>
+	<root level="DEBUG">
+		<appender-ref ref="console" />
+		<appender-ref ref="file" />
+	</root>
+</configuration>

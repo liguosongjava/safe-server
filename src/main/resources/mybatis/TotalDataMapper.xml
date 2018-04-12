@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.safe.info.core.mapper.TotalDataMapper">
+    <select id="queryTotalDataPage"  resultType="com.safe.info.core.pojo.TotalDataDetail">
+        SELECT t1.*,t2.name AS company_name,t3.name AS region_name,t4.name AS apply_customer_name,
+              t5.query_no as hp_query_no,t5.certificates_no as hp_certificates_no,
+              t5.has_id_no as hp_has_id_no,t5.has_name as hb_has_name,
+              t5.student_name as hp_student_name,t5.share_people as hp_share_people,
+              t5.house_street as hp_house_street,t5.house_address as hp_house_address,
+              t5.obtain_time as hp_obtain_time,
+              t6.name as hr_name,t6.address as hr_address,t6.id_no as hr_id_no,
+              t6.sex as hr_sex,t6.issuing_company as hr_issuing_company,t6.juwei_hui as hr_juwei_hui,
+              t6.village_street as hr_village_street,t6.father as hr_father,t6.mother as hr_mother,
+              t6.other_guardian as hr_other_guardian
+        FROM  t_total_data t1
+              INNER JOIN  t_company t2 ON  t2.id = t1.company_id
+              INNER JOIN  t_region t3 ON t3.id = t1.region_id
+              INNER JOIN  t_customer t4 ON t4.id = t1.apply_customer
+              INNER JOIN  t_house_property t5 ON t5.id = t1.house_pro_id
+              INNER JOIN  t_household_register t6 ON t6.id = t1.household_id
+        WHERE 1=1 AND  t1.state=1
+        <if test="totalParam.regionName != null and !totalParam.regionName.equals('') ">
+            AND t3.name LIKE concat('%',#{totalParam.regionName},'%')
+        </if>
+        <if test="totalParam.companyName != null and !totalParam.companyName.equals('') ">
+            AND t2.name LIKE concat('%',#{totalParam.companyName},'%')
+        </if>
+        <if test="totalParam.studentName != null and !totalParam.studentName.equals('') ">
+            AND t6.name LIKE concat('%',#{totalParam.studentName},'%')
+        </if>
+        <if test="totalParam.studentIdNo != null and !totalParam.studentIdNo.equals('') ">
+            AND t6.name LIKE concat('%',#{totalParam.studentIdNo},'%')
+        </if>
+        <if test="totalParam.declareType != null">
+            AND t1.declare_type = #{totalParam.declareType}
+        </if>
+        <if test="totalParam.declareGrade != null">
+            AND t1.grade=#{totalParam.declareGrade}
+        </if>
+        <if test="totalParam.auditStatus != null">
+            AND t1.audit_status=#{totalParam.auditStatus}
+        </if>
+        limit #{start},#{pageNum}
+    </select>
+
+    <select id="queryTotalDataPageCount" parameterType="com.safe.info.core.vo.TotalParam" resultType="java.lang.Integer">
+        SELECT COUNT(t1.id)
+        FROM  t_total_data t1
+        INNER JOIN  t_company t2 ON  t2.id = t1.company_id
+        INNER JOIN  t_region t3 ON t3.id = t1.region_id
+        INNER JOIN  t_customer t4 ON t4.id = t1.apply_customer
+        INNER JOIN  t_house_property t5 ON t5.id = t1.house_pro_id
+        INNER JOIN  t_household_register t6 ON t6.id = t1.household_id
+        WHERE 1=1 AND  t1.state=1
+        <if test="regionName != null and !regionName.equals('') ">
+            AND t3.name LIKE concat('%',#{regionName},'%')
+        </if>
+        <if test="companyName != null and !companyName.equals('') ">
+            AND t2.name LIKE concat('%',#{regionName},'%')
+        </if>
+        <if test="studentName != null and !studentName.equals('') ">
+            AND t6.name LIKE concat('%',#{regionName},'%')
+        </if>
+        <if test="studentIdNo != null and !studentIdNo.equals('') ">
+            AND t6.name LIKE concat('%',#{regionName},'%')
+        </if>
+        <if test="declareType != null">
+            AND t1.declare_type = #{declareType}
+        </if>
+        <if test="declareGrade != null">
+            AND t1.grade=#{declareGrade}
+        </if>
+        <if test="auditStatus != null">
+            AND t1.audit_status=#{auditStatus}
+        </if>
+    </select>
+
+    <select id="queryTotalData" parameterType="Long"  resultType="com.safe.info.core.pojo.TotalDataDetail">
+        SELECT t1.*,t2.name AS region_name,t3.name AS apply_customer_name,
+              t5.query_no as hp_query_no,t5.certificates_no as hp_certificates_no,
+              t5.has_id_no as hp_has_id_no,t5.has_name as hb_has_name,
+              t5.student_name as hp_student_name,t5.share_people as hp_share_people,
+              t5.house_street as hp_house_street,t5.house_address as hp_house_address,
+              t5.obtain_time as hp_obtain_time,
+              t6.name as hr_name,t6.address as hr_address,t6.id_no as hr_id_no,
+              t6.sex as hr_sex,t6.issuing_company as hr_issuing_company,t6.juwei_hui as hr_juwei_hui,
+              t6.village_street as hr_village_street,t6.father as hr_father,t6.mother as hr_mother,
+              t6.other_guardian as hr_other_guardian
+        FROM  t_total_data t1
+              INNER JOIN  t_company t2 ON  t2.id = t1.company_id
+              INNER JOIN  t_region t3 ON t3.id = t1.region_id
+              INNER JOIN  t_customer t4 ON t4.id = t1.apply_customer
+              INNER JOIN  t_house_property t5 ON t5.id = t1.house_pro_id
+              INNER JOIN  t_household_register t6 ON t6.id = t1.household_id
+        WHERE 1=1 AND  t1.state=1 AND  t1.id = #{id} limit 1
+    </select>
+
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.safe.info.core.mapper.RegionMapper">
+    <select id="queryRegionPage" resultType="com.safe.info.core.pojo.RegionDetail">
+        SELECT t1.*,t2.name AS create_customer_name FROM  t_region t1
+         INNER JOIN t_customer t2 ON t2.id = t1.create_customer
+         WHERE 1=1 AND t1.state=1
+        <if test="name != null and !name.equals('') ">
+            AND t1.name LIKE concat('%',#{name},'%')
+        </if>
+        limit #{start},#{pageNum}
+    </select>
+
+    <select id="queryRegionPageCount" resultType="java.lang.Integer">
+        SELECT COUNT(t1.id)  FROM  t_region t1
+        INNER JOIN t_customer t2 ON t2.id = t1.create_customer
+        WHERE 1=1 AND t1.state=1
+        <if test="name != null and !name.equals('') ">
+            AND t1.name LIKE concat('%',#{name},'%')
+        </if>
+    </select>
+
+    <select id="queryRegion" parameterType="Long" resultType="com.safe.info.core.pojo.RegionDetail">
+        SELECT t1.*,t2.name AS create_customer_name FROM  t_region t1
+        INNER JOIN t_customer t2 ON t2.id = t1.create_customer
+        WHERE 1=1 AND t1.state=1 AND  t1.id=#{id}
+    </select>
+
+    <insert id="insertRegion" parameterType="com.safe.info.core.pojo.Region">
+        insert into
+        t_region(name,remark,create_customer,state,update_time,create_time)
+        values
+        (#{name},#{remark},#{createCustomer},1,now(),now())
+    </insert>
+
+    <update id="updateRegion" parameterType="com.safe.info.core.pojo.Region">
+        UPDATE t_region
+        <trim prefix="SET" prefixOverrides=",">
+            <if test="name != null and !name.equals('') "> ,name=#{name}</if>
+            <if test="remark != null and !remark.equals('') "> ,remark=#{remark}</if>
+            <if test="createCustomer != null and !createCustomer.equals('') "> ,create_customer=#{createCustomer}</if>
+            <if test="state != null and !state.equals('') "> ,state=#{state}</if>
+            ,update_time = NOW()
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteRegion" parameterType="java.lang.Long">
+        DELETE FROM t_region WHERE 1=1 AND id =${id}
+    </delete>
+
+    <delete id="deleteRegionBatch" parameterType="java.util.List">
+        DELETE FROM t_region WHERE 1=1 AND id IN
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

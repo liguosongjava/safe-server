@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.safe.info.core.mapper.CompanyMapper">
+    <select id="queryCompanyPage"  resultType="com.safe.info.core.pojo.CompanyDetail">
+        SELECT t1.*,t2.name AS region_name,t3.name AS create_customer_name FROM  t_company t1
+            INNER JOIN t_region t2 ON t1.region_id = t2.id
+            INNER JOIN t_customer t3 ON t3.id = t1.create_customer
+        WHERE 1=1
+            <if test="name != null and !name.equals('') ">
+                AND t1.name LIKE concat('%',#{name},'%')
+            </if>
+            <if test="regionName != null and !regionName.equals('') ">
+                AND t2.name LIKE concat('%',#{regionName},'%')
+            </if>
+             limit #{start},#{pageNum}
+    </select>
+
+    <select id="queryCompanyPageCount"  resultType="java.lang.Integer">
+        SELECT COUNT(t1.id)  FROM  t_company t1
+        INNER JOIN t_region t2 ON t1.region_id = t2.id
+        INNER JOIN t_customer t3 ON t3.id = t1.create_customer
+        WHERE 1=1
+        <if test="name != null and !name.equals('') ">
+            AND t1.name LIKE concat('%',#{name},'%')
+        </if>
+        <if test="regionName != null and !regionName.equals('') ">
+            AND t2.name LIKE concat('%',#{regionName},'%')
+        </if>
+    </select>
+
+    <select id="queryCompany" parameterType="Long"  resultType="com.safe.info.core.pojo.CompanyDetail">
+        SELECT t1.*,t2.name AS region_name,t3.name AS create_customer_name FROM  t_company t1
+        INNER JOIN t_region t2 ON t1.region_id = t2.id
+        INNER JOIN t_customer t3 ON t3.id = t1.create_customer
+        WHERE 1=1 AND  t1.id = #{id} limit 1
+    </select>
+
+    <insert id="insertCompany" parameterType="com.safe.info.core.pojo.Company">
+        insert into t_company
+		(name,address,phone,region_id,declare_num,declare_type,declare_grade,
+		  company_level,house_check,hregister_check,remark,create_customer,
+		  state,update_time,create_time) VALUES
+		(#{name},#{address},#{phone},#{regionId},#{declareNum},#{declareType},
+		#{declareGrade},#{companyLevel},#{houseCheck},#{hregisterCheck},#{remark},
+		#{createCustomer},1,NOW(),NOW())
+    </insert>
+
+    <update id="updateCompany" parameterType="com.safe.info.core.pojo.Company">
+        UPDATE t_company
+        <trim prefix="SET" prefixOverrides=",">
+            <if test="name != null and !name.equals('') "> ,name=#{name}</if>
+            <if test="address != null and !address.equals('') "> ,address=#{address}</if>
+            <if test="phone != null and !phone.equals('') "> ,phone=#{phone}</if>
+            <if test="regionId != null and !regionId.equals('') "> ,region_id=#{regionId}</if>
+            <if test="declareNum != null and !declareNum.equals('') "> ,declare_num=#{declareNum}</if>
+            <if test="declareType != null and !declareType.equals('') "> ,declare_type=#{declareType}</if>
+            <if test="declareGrade != null and !declareGrade.equals('') "> ,declare_grade=#{declareGrade}</if>
+            <if test="companyLevel != null and !companyLevel.equals('') "> ,company_level=#{companyLevel}</if>
+            <if test="houseCheck != null and !houseCheck.equals('') "> ,house_check=#{houseCheck}</if>
+            <if test="hregisterCheck != null and !hregisterCheck.equals('') "> ,hregister_check=#{hregisterCheck}</if>
+            <if test="remark != null and !remark.equals('') "> ,remark=#{remark}</if>
+            <if test="createCustomer != null and !createCustomer.equals('') "> ,create_customer=#{createCustomer}</if>
+            <if test="state != null and !state.equals('') "> ,state=#{state}</if>
+            ,update_time = NOW()
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+
+    <delete id="deleteCompany" parameterType="java.lang.Long">
+        DELETE FROM t_company WHERE 1=1 AND id =${id}
+    </delete>
+
+    <delete id="deleteCompanyBatch" parameterType="java.util.List">
+        DELETE FROM t_company WHERE 1=1 AND id IN
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>
