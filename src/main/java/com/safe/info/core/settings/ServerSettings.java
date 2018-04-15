@@ -9,6 +9,8 @@ public class ServerSettings {
 
     private String houseProImportPath;
 
+
+
     public String getHouseRegImportPath() {
         return houseRegImportPath;
     }
